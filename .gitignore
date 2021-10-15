@@ -1,0 +1,3 @@
+# Project exclude paths
+/cloud_lessons_client/target/
+/cloud_lessons_server/target/
