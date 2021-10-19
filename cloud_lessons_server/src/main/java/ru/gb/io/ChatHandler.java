@@ -26,11 +26,12 @@ public class ChatHandler implements Runnable{
         this.server = server;
         cnt++;
         userName = "User#" + cnt;
+        new File("./" + userName).mkdir();
         format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         inputStream = new DataInputStream(socket.getInputStream());
         outputStream = new DataOutputStream(socket.getOutputStream());
         inputFile = new BufferedInputStream(socket.getInputStream());
-        file = new File("./temp_file");
+        file = new File("./" + userName + "/temp_file");
         file.createNewFile();
         fileOutputStream = new FileOutputStream(file);
     }
@@ -54,17 +55,8 @@ public class ChatHandler implements Runnable{
         }
     }
 
-//    public String getFormatMessage(String message) {
-////        return getTime() + " [" + userName + "]: " + System.lineSeparator() + message;
-//    }
-
     private String getTime() {
         return format.format(new Date());
     }
 
-    public void sendMessage(String message) throws IOException {
-//        dos.writeUTF(message);
-//        dos.flush();
-
-    }
 }

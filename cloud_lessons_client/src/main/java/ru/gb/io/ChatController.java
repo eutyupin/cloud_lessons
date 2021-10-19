@@ -39,26 +39,9 @@ public class ChatController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             socket = new Socket("localhost", 9999);
-//            outputStream = new DataOutputStream(socket.getOutputStream());
-//            buf = new BufferedOutputStream(socket.getOutputStream());
+            outputStream = new DataOutputStream(socket.getOutputStream());
+            buf = new BufferedOutputStream(socket.getOutputStream());
             createTree();
-
-//            Thread readThread = new Thread(() -> {
-//                try {
-//                    while (true) {
-////                        String message = dis.readUTF();
-////                        Platform.runLater(() -> chatField.getItems().add(message));
-//                    }
-//
-//                }catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//
-//            });
-//            readThread.setDaemon(true);
-//            readThread.start();
-//
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,12 +72,6 @@ public class ChatController implements Initializable {
             item.getChildren().add(treeItem);
         }
     }
-
-//    public void sendMessage(ActionEvent actionEvent) throws IOException {
-//        dos.writeUTF(messageField.getText());
-//        dos.flush();
-//        messageField.setText("");
-//    }
 
     @FXML
     private void sendFile(ActionEvent actionEvent) {

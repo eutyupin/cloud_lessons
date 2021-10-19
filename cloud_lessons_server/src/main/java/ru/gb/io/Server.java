@@ -24,13 +24,6 @@ public class Server {
         }
     }
 
-    public void broadCastMessage(String message) throws IOException {
-        System.out.println(message);
-        for (ChatHandler client : clients) {
-            client.sendMessage(message);
-        }
-    }
-
     public static void main(String[] args) {
         new Server();
     }
