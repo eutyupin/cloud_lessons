@@ -10,7 +10,7 @@ public class Server {
 
     public Server() {
         clients = new ConcurrentLinkedDeque<>();
-        try (ServerSocket server = new ServerSocket(8189)) {
+        try (ServerSocket server = new ServerSocket(9999)) {
             System.out.println("Server started...");
             while (true) {
                 Socket socket = server.accept();
