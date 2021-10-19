@@ -48,7 +48,7 @@ public class ChatHandler implements Runnable{
                     fileOutputStream.write(byteArray,0, i);
                 }
                 fileOutputStream.close();
-//                server.broadCastMessage(getFormatMessage(message));
+                if (file.getName().toString().equals("temp_file")) file.renameTo(new File("./" + userName + "/" + fileName));
             }
         } catch (Exception e) {
             e.printStackTrace();
