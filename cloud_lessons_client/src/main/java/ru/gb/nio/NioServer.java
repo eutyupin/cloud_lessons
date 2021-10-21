@@ -65,9 +65,9 @@ public class NioServer {
     }
 
     private void handleAccept(SelectionKey key) throws Exception{
-        ServerSocketChannel server = (ServerSocketChannel) key.channel();
         SocketChannel channel = server.accept();
-        channel.register(selector, SelectionKey.OP_READ, "Hello world");
+        channel.configureBlocking(false);
+        channel.register(selector, SelectionKey.OP_READ, "Server started... ");
     }
 
     public static void main(String[] args) throws Exception {
