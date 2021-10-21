@@ -11,7 +11,7 @@ public class ioUtils {
 
         InputStream is = new FileInputStream(resource);
         OutputStream os = new FileOutputStream(copy + "/copy.txt");
-        
+
         byte[] buffer = new byte[8192];
         int readBytes = 0;
         while (true) {

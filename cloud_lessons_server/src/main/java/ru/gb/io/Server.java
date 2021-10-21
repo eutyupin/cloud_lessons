@@ -10,7 +10,7 @@ public class Server {
 
     public Server() {
         clients = new ConcurrentLinkedDeque<>();
-        try (ServerSocket server = new ServerSocket(8189)) {
+        try (ServerSocket server = new ServerSocket(9999)) {
             System.out.println("Server started...");
             while (true) {
                 Socket socket = server.accept();
@@ -21,13 +21,6 @@ public class Server {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    public void broadCastMessage(String message) throws IOException {
-        System.out.println(message);
-        for (ChatHandler client : clients) {
-            client.sendMessage(message);
         }
     }
 
