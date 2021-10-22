@@ -66,7 +66,98 @@ public class NioServer {
             }
             buffer.clear();
         }
+        channel.write(ByteBuffer.wrap(checkEnteredCommand(sb).getBytes(StandardCharsets.UTF_8)));
+        String currentPathString = currentPath.toString() + " :> ";
+        channel.write(ByteBuffer.wrap(currentPathString.getBytes(StandardCharsets.UTF_8)));
+    }
 
+    private String checkEnteredCommand(StringBuilder command) {
+        boolean startWithCD = command.toString().toLowerCase().startsWith("cd..");
+
+        if (command.toString().trim().equals("ls")) {
+            return checkLSCommand();
+        }
+        if (command.toString().toLowerCase().startsWith("cd") && !startWithCD) {
+            return checkCDCommand(command);
+        }
+        if (startWithCD) {
+            checkCDDotDotCommand();
+            return "";
+        }
+        if (command.toString().toLowerCase().startsWith("touch")) {
+            return chekTouchCommand(command);
+        }
+        if(command.toString().toLowerCase().startsWith("cat")) {
+            return checkCATCommand(command);
+        }
+        return command.toString();
+    }
+
+    private String checkLSCommand() {
+        StringBuilder folderContainsToSB = new StringBuilder();
+        for (File file : currentPath.toFile().listFiles()) {
+            if (file.isDirectory()) {
+                folderContainsToSB.append("Folder: ").append(file.getName()).append(System.lineSeparator());
+            } else {
+                folderContainsToSB.append("File:   ").append(file.getName()).append(System.lineSeparator());
+            }
+        }
+        return folderContainsToSB.toString();
+    }
+
+    private String checkCDCommand(StringBuilder command) {
+        if (command.substring(3).trim().equals("")) return System.lineSeparator() +
+                "No directory name entered!" + System.lineSeparator();
+        Path tempPath;
+        try {
+            tempPath = currentPath.resolve(command.substring(3).trim());
+        } catch (InvalidPathException e) {
+            return "Wrong directory name!" + System.lineSeparator();
+        }
+        if (tempPath.toFile().isDirectory()) {
+            currentPath = currentPath.resolve(command.substring(3).trim());
+        } else return System.lineSeparator() + "Wrong directory name!" + System.lineSeparator();
+        return "";
+    }
+
+    private void checkCDDotDotCommand() {
+        currentPath = currentPath.getParent();
+    }
+
+    private String chekTouchCommand(StringBuilder command) {
+        if (command.substring(6).trim().length() > 0) {
+            Path newFile = currentPath.resolve(command.substring(6).trim());
+            if (!Files.exists(newFile)) {
+                try {
+                    Files.createFile(newFile);
+                } catch (IOException e) {
+                    return System.lineSeparator() + "Error file creating! Try again!" + System.lineSeparator();
+                }
+                return System.lineSeparator() + "File " + command.substring(6).trim() +
+                        " was created" + System.lineSeparator();
+            }
+        } else return System.lineSeparator() + "Wrong file name. Try again. " + System.lineSeparator();
+
+        return "";
+    }
+
+    private String checkCATCommand(StringBuilder command) {
+        String fileName = command.toString().substring(4).trim();
+        Path filePath = Paths.get(currentPath.toString(), fileName);
+        if (Files.exists(filePath)) {
+            try {
+                StringBuilder text = new StringBuilder();
+                List<String> textList = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+                for (String line : textList) {
+                    text.append(line);
+                    text.append(System.lineSeparator());
+                }
+                return text.toString();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return "File is empty" + System.lineSeparator();
     }
 
     private void handleAccept(SelectionKey key) throws Exception{
