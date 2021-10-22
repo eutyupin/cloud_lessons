@@ -1,15 +1,20 @@
 package ru.gb.nio;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class NioServer {
@@ -17,6 +22,7 @@ public class NioServer {
     private ServerSocketChannel server;
     private Selector selector;
     private ByteBuffer buffer;
+    private Path currentPath = Paths.get("./").toAbsolutePath().getParent();
 
     public NioServer() throws Exception {
         buffer = ByteBuffer.allocate(256);
@@ -43,12 +49,12 @@ public class NioServer {
     }
 
     private void handleRead(SelectionKey key) throws IOException {
-        SocketChannel chanel = (SocketChannel) key.channel();
+        SocketChannel channel = (SocketChannel) key.channel();
         StringBuilder sb = new StringBuilder();
         while (true) {
-            int read = chanel.read(buffer);
+            int read = channel.read(buffer);
             if (read == -1) {
-                chanel.close();
+                channel.close();
                 return;
             }
             if (read == 0) {
@@ -60,8 +66,7 @@ public class NioServer {
             }
             buffer.clear();
         }
-        String result = "[From server]: " + sb.toString();
-        chanel.write(ByteBuffer.wrap(result.getBytes(StandardCharsets.UTF_8)));
+
     }
 
     private void handleAccept(SelectionKey key) throws Exception{
@@ -73,4 +78,6 @@ public class NioServer {
     public static void main(String[] args) throws Exception {
         new NioServer();
     }
+
+
 }
